@@ -1,0 +1,6 @@
+{
+  "name": "Wedding Invite Admin",
+  "description": "Admin platform for generating unique and personalized wedding invitations and tracking RSVPs.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
