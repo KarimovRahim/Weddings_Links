@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { QRCodeSVG } from 'qrcode.react';
-import { Copy, Plus, Trash2, CheckCircle, XCircle, Clock, Link as LinkIcon, Users, Settings as SettingsIcon, Save, Edit3, X, Download, Search } from 'lucide-react';
+import { Copy, Plus, Trash2, CheckCircle, XCircle, Clock, Link as LinkIcon, Users, Settings as SettingsIcon, Save, Edit3, X, Download, Search, Boxes } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { Guest, WeddingSettings } from '../types';
 
@@ -698,6 +698,27 @@ export default function AdminDashboard() {
         </motion.div>
       )}
       </AnimatePresence>
+      
+      {/* Footer Learn IT Badge */}
+      <div className="mt-12 mb-4 flex justify-center text-center">
+        <a 
+          href="https://www.learn-it-academy.site/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full overflow-hidden transition-all duration-300 hover:scale-105 bg-white border border-gray-200 hover:border-[#111] shadow-sm hover:shadow-lg hover:shadow-red-500/10"
+        >
+          <div className="absolute inset-0 bg-[#111111] translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
+          
+          <span className="relative z-10 text-xs font-medium text-gray-500 group-hover:text-gray-300 transition-colors duration-500 flex items-center gap-2">
+            Разработано в 
+            <span className="font-bold text-gray-900 group-hover:text-[#ff4444] transition-colors duration-500 flex items-center gap-1.5">
+              <Boxes size={14} strokeWidth={2.5} className="transition-transform duration-500 group-hover:rotate-12" />
+              LEARN IT
+            </span>
+          </span>
+        </a>
+      </div>
+
     </div>
   );
 }
