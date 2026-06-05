@@ -10,3 +10,9 @@
 body {
   background-color: #faf9f6; /* Soft off-white wedding paper color */
 }
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(200%);
+  }
+}
