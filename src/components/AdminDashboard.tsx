@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { QRCodeSVG } from 'qrcode.react';
-import { Copy, Plus, Trash2, CheckCircle, XCircle, Clock, Link as LinkIcon, Users, Settings as SettingsIcon, Save, Edit3, X, Download, Search, Boxes } from 'lucide-react';
+import { Copy, Plus, Trash2, CheckCircle, XCircle, Clock, Link as LinkIcon, Users, Settings as SettingsIcon, Save, Edit3, X, Download, Search, Boxes, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import type { Guest, WeddingSettings } from '../types';
 
@@ -394,15 +394,24 @@ export default function AdminDashboard() {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-                  <div className="relative w-full max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                    <input 
-                      type="text" 
-                      placeholder="Поиск гостя по имени..." 
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-colors text-sm"
-                    />
+                  <div className="relative flex items-center w-full max-w-sm gap-2">
+                    <div className="relative w-full">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                      <input 
+                        type="text" 
+                        placeholder="Поиск гостя по имени..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900/20 focus:border-gray-900 transition-colors text-sm"
+                      />
+                    </div>
+                    <button 
+                      onClick={() => fetchData()}
+                      className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200 bg-white"
+                      title="Обновить таблицу"
+                    >
+                      <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+                    </button>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
