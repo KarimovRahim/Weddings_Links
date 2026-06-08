@@ -528,7 +528,7 @@ export default function InvitationView() {
         </section>
 
         {/* Learn IT Badge */}
-        <div className="pt-8 pb-12 flex justify-center relative z-10 w-full mb-4">
+        <div className="pt-8 pb-4 flex justify-center relative z-10 w-full mb-0">
           <a 
             href="https://www.learn-it-academy.site/" 
             target="_blank" 
