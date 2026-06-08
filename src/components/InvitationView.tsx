@@ -244,27 +244,7 @@ export default function InvitationView() {
   return (
     <div className="min-h-screen relative font-serif text-[#4a4a4a] overflow-x-hidden" style={bgStyle}>
       <FloatingParticles />
-      
-      {/* Learn IT Badge - Top Right */}
-      <div className="absolute top-4 right-4 z-[100]">
-        <a 
-          href="https://www.learn-it-academy.site/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="group relative inline-flex items-center justify-center px-4 py-2 overflow-hidden transition-all duration-500 rounded-full hover:scale-105 hover:shadow-[0_8px_30px_-5px_rgba(255,68,68,0.4)]"
-        >
-          <div className="absolute inset-0 bg-white/70 backdrop-blur-md border border-[#cbae9e]/30 rounded-full transition-all duration-500 group-hover:bg-[#111111] group-hover:border-[#ff4444]/50 shadow-sm"></div>
-          <div className="absolute -inset-full top-0 z-0 block h-full w-1/2 -skew-x-12 transform bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[shimmer_1.5s_infinite]"></div>
-          
-          <span className="relative z-10 text-[9px] font-sans tracking-[0.2em] text-[#8a7f76] uppercase transition-colors duration-500 group-hover:text-gray-300 flex items-center gap-1.5">
-            <span className="hidden sm:inline">Разработано в</span>
-            <span className="font-bold text-[#b5a396] group-hover:text-[#ff4444] transition-colors duration-500 flex items-center gap-1 text-[10px] drop-shadow-sm group-hover:drop-shadow-[0_0_8px_rgba(255,68,68,0.6)]">
-              <Boxes size={12} strokeWidth={2.5} className="transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110" />
-              LEARN IT
-            </span>
-          </span>
-        </a>
-      </div>
+
 
       {/* Cover Screen */}
       <AnimatePresence>
@@ -546,6 +526,27 @@ export default function InvitationView() {
              )}
            </div>
         </section>
+
+        {/* Learn IT Badge */}
+        <div className="pt-8 pb-12 flex justify-center relative z-10 w-full mb-4">
+          <a 
+            href="https://www.learn-it-academy.site/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="group relative inline-flex items-center justify-center px-6 py-3 overflow-hidden transition-all duration-500 rounded-2xl hover:scale-105 hover:shadow-[0_8px_30px_-5px_rgba(255,68,68,0.4)]"
+          >
+            <div className="absolute inset-0 bg-[#ffffff] backdrop-blur-md border border-[#cbae9e]/80 rounded-2xl transition-all duration-500 group-hover:bg-[#111111] group-hover:border-[#ff4444]/50 shadow-md"></div>
+            <div className="absolute -inset-full top-0 z-0 block h-full w-1/2 -skew-x-12 transform bg-gradient-to-r from-transparent via-black/5 group-hover:via-white/10 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[shimmer_1.5s_infinite]"></div>
+            
+            <span className="relative z-10 text-[10px] sm:text-xs font-sans tracking-[0.2em] text-[#5a504a] uppercase transition-colors duration-500 group-hover:text-gray-300 flex items-center gap-2">
+              <span className="inline">Разработано в</span>
+              <span className="font-bold text-[#b5a396] group-hover:text-[#ff4444] transition-colors duration-500 flex items-center gap-1.5 drop-shadow-sm group-hover:drop-shadow-[0_0_12px_rgba(255,68,68,0.6)]">
+                <Boxes size={16} strokeWidth={2.5} className="transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110" />
+                LEARN IT
+              </span>
+            </span>
+          </a>
+        </div>
 
       </div>
     </div>
