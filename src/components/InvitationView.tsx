@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from 'react';
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Heart, Sparkles, Boxes } from 'lucide-react';
@@ -65,6 +70,11 @@ export default function InvitationView() {
   
   const [isOpened, setIsOpened] = useState(false);
   const [timeLeft, setTimeLeft] = useState<{days: number, hours: number, minutes: number, seconds: number} | null>(null);
+
+  // Аудио состояния
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [audioInitialized, setAudioInitialized] = useState(false);
 
   useEffect(() => {
     document.fonts.ready.then(() => {
@@ -141,6 +151,59 @@ export default function InvitationView() {
       document.body.style.overflow = 'auto';
     };
   }, [isOpened]);
+
+  // Инициализация аудио и попытка автовоспроизведения
+  useEffect(() => {
+    const audio = new Audio('/backaudio.m4a');
+    audio.loop = true;
+    audio.volume = 0.5;
+    audio.preload = 'auto';
+    audioRef.current = audio;
+    setAudioInitialized(true);
+
+    // Попытка автоматического воспроизведения (может быть заблокирована)
+    audio.play()
+      .then(() => {
+        setIsAudioPlaying(true);
+      })
+      .catch(() => {
+        console.log('Автовоспроизведение заблокировано. Ожидание первого взаимодействия...');
+        setIsAudioPlaying(false);
+      });
+
+    // Если автовоспроизведение не удалось, запускаем при первом клике пользователя
+    const handleFirstInteraction = () => {
+      if (audioRef.current && audioRef.current.paused) {
+        audioRef.current.play()
+          .then(() => setIsAudioPlaying(true))
+          .catch(err => console.error('Ошибка воспроизведения после клика:', err));
+      }
+      document.removeEventListener('click', handleFirstInteraction);
+    };
+
+    document.addEventListener('click', handleFirstInteraction, { once: true });
+
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      audio.pause();
+      audio.src = '';
+      audioRef.current = null;
+    };
+  }, []);
+
+  const toggleAudio = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    
+    if (audio.paused) {
+      audio.play()
+        .then(() => setIsAudioPlaying(true))
+        .catch(err => console.error('Ошибка воспроизведения:', err));
+    } else {
+      audio.pause();
+      setIsAudioPlaying(false);
+    }
+  };
 
   const handleRSVP = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -245,6 +308,28 @@ export default function InvitationView() {
     <div className="min-h-screen relative font-serif text-[#4a4a4a] overflow-x-hidden" style={bgStyle}>
       <FloatingParticles />
 
+      {/* Аудио контрол */}
+      {isOpened && (
+        <button
+          onClick={toggleAudio}
+          className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-white/80 backdrop-blur-md border border-[#cbae9e]/40 shadow-lg flex items-center justify-center text-[#8c7462] hover:bg-white transition-all hover:scale-105 active:scale-95"
+          aria-label={isAudioPlaying ? 'Выключить музыку' : 'Включить музыку'}
+        >
+          {isAudioPlaying ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <line x1="23" y1="9" x2="17" y2="15"></line>
+              <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+          )}
+        </button>
+      )}
 
       {/* Cover Screen */}
       <AnimatePresence>
@@ -282,7 +367,15 @@ export default function InvitationView() {
               </div>
               
               <button 
-                onClick={() => setIsOpened(true)}
+                onClick={() => {
+                  setIsOpened(true);
+                  // При клике на открытие также пробуем запустить аудио (если ещё не играет)
+                  if (audioRef.current && audioRef.current.paused) {
+                    audioRef.current.play()
+                      .then(() => setIsAudioPlaying(true))
+                      .catch(err => console.error('Ошибка воспроизведения при открытии:', err));
+                  }
+                }}
                 className="w-28 h-28 rounded-full bg-[#af2d2d] flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group relative shadow-[0_8px_30px_rgba(175,45,45,0.4)] z-50 cursor-pointer"
               >
                   {/* Wax seal effect wrapper */}
@@ -552,4 +645,3 @@ export default function InvitationView() {
     </div>
   );
 }
-
