@@ -406,77 +406,85 @@ export default function InvitationView() {
         </button>
       )}
 
-      {/* Cover Screen */}
-      <AnimatePresence>
-        {!isOpened && (
-          <motion.div 
-            initial={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -100 }}
-            transition={{ duration: 0.9, ease: [0.6, -0.05, 0.01, 1] }}
-            className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden"
-            style={{
-              backgroundColor: '#fffdf9',
-              backgroundImage: `url("https://www.transparenttextures.com/patterns/rice-paper.png"), url("https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80")`,
-              backgroundSize: 'auto, cover',
-              backgroundPosition: 'center, center',
-              backgroundBlendMode: 'multiply, soft-light'
+     <AnimatePresence>
+  {!isOpened && (
+    <motion.div 
+      initial={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -100 }}
+      transition={{ duration: 0.9, ease: [0.6, -0.05, 0.01, 1] }}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden"
+      style={{
+        backgroundColor: '#fffdf9',
+        backgroundImage: `url("https://www.transparenttextures.com/patterns/rice-paper.png"), url("https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=80")`,
+        backgroundSize: 'auto, cover',
+        backgroundPosition: 'center, center',
+        backgroundBlendMode: 'multiply, soft-light'
+      }}
+    >
+      <div className="absolute inset-0 border-[16px] md:border-[24px] border-[#fffdf9] pointer-events-none z-10 box-border"></div>
+      <div className="absolute inset-4 md:inset-6 border-2 border-double border-[#cbae9e]/60 pointer-events-none z-10 rounded-sm"></div>
+
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.3, duration: 1.2, ease: "easeOut" }}
+        className="text-center flex flex-col items-center relative z-20"
+      >
+        {/* Декоративная линия (опционально) */}
+        <div className="w-[1px] h-20 bg-gradient-to-b from-transparent to-[#cbae9e]/70 mb-10 mx-auto hidden md:block"></div>
+
+        {/* Заголовок */}
+        <h1 className="text-xl md:text-2xl uppercase tracking-[0.4em] font-sans text-[#a79485] mb-6">
+          Свадебное Приглашение
+        </h1>
+
+        {/* Имена */}
+        <div className="text-6xl md:text-8xl font-script text-[#b59e78] mb-14 drop-shadow-sm px-4 leading-tight">
+          {settings.groomName} <span className="text-4xl text-[#cbae9e] mx-4">&</span> {settings.brideName}
+        </div>
+
+        {/* Пульсирующая кнопка */}
+        <motion.div
+          animate={{ scale: [1, 1.05, 1], opacity: [1, 0.85, 1] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="relative z-50"
+        >
+          <button 
+            onClick={() => {
+              setIsOpened(true);
+              if (audioRef.current && audioRef.current.paused) {
+                audioRef.current.play()
+                  .then(() => setIsAudioPlaying(true))
+                  .catch(err => console.error('Ошибка воспроизведения при открытии:', err));
+              }
             }}
+            className="w-28 h-28 rounded-full bg-[#af2d2d] flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group relative shadow-[0_8px_30px_rgba(175,45,45,0.4)] cursor-pointer"
           >
-            <div className="absolute inset-0 border-[16px] md:border-[24px] border-[#fffdf9] pointer-events-none z-10 box-border"></div>
-            <div className="absolute inset-4 md:inset-6 border-2 border-double border-[#cbae9e]/60 pointer-events-none z-10 rounded-sm"></div>
-            
-            <motion.div 
-               initial={{ opacity: 0, scale: 0.9 }}
-               animate={{ opacity: 1, scale: 1 }}
-               transition={{ delay: 0.3, duration: 1.2, ease: "easeOut" }}
-               className="text-center flex flex-col items-center relative z-20"
-            >
-              <div className="w-[1px] h-20 bg-gradient-to-b from-transparent to-[#cbae9e]/70 mb-10 mx-auto hidden md:block"></div>
-              
-              <h1 className="text-xl md:text-2xl uppercase tracking-[0.4em] font-sans text-[#a79485] mb-6">
-                Свадебное Приглашение
-              </h1>
-              
-              <div className="text-6xl md:text-8xl font-script text-[#b59e78] mb-14 drop-shadow-sm px-4 leading-tight">
-                {settings.groomName} <span className="text-4xl text-[#cbae9e] mx-4">&</span> {settings.brideName}
-              </div>
-              
-              <button 
-                onClick={() => {
-                  setIsOpened(true);
-                  // При клике на открытие также пробуем запустить аудио (если ещё не играет)
-                  if (audioRef.current && audioRef.current.paused) {
-                    audioRef.current.play()
-                      .then(() => setIsAudioPlaying(true))
-                      .catch(err => console.error('Ошибка воспроизведения при открытии:', err));
-                  }
-                }}
-                className="w-28 h-28 rounded-full bg-[#af2d2d] flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group relative shadow-[0_8px_30px_rgba(175,45,45,0.4)] z-50 cursor-pointer"
-              >
-                  {/* Wax seal effect wrapper */}
-                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#d43737] via-[#b31f1f] to-[#7a1212] shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_6px_rgba(0,0,0,0.5)] border-[1px] border-[#ea9999]"></div>
-                 <div className="absolute inset-1 rounded-full border border-white/20 pointer-events-none"></div>
-                 <div className="relative text-[#fdf0ed] drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)] flex flex-col items-center">
-                    <Heart size={32} className="mx-auto block" fill="currentColor" />
-                 </div>
-              </button>
-              
-              {/* Плавно мигающая подсказка */}
-              <motion.p 
-                className="mt-8 text-xs tracking-[0.3em] font-sans text-[#a79485] uppercase"
-                animate={{ opacity: [1, 0.4, 1] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              >
-                Нажмите, чтобы открыть приглашение
-              </motion.p>
-            </motion.div>
-            
-            {/* Floral decorations */}
-            <div className="absolute top-0 right-0 w-80 h-80 md:w-[32rem] md:h-[32rem] bg-[url('https://images.unsplash.com/photo-1507290439931-a861b5a38200?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] bg-cover opacity-15 pointer-events-none rounded-bl-full" style={{ mixBlendMode: 'multiply' }}></div>
-            <div className="absolute bottom-0 left-0 w-80 h-80 md:w-[32rem] md:h-[32rem] bg-[url('https://images.unsplash.com/photo-1507290439931-a861b5a38200?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] bg-cover opacity-15 pointer-events-none rounded-tr-full transform rotate-180" style={{ mixBlendMode: 'multiply' }}></div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            {/* Wax seal effect wrapper */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#d43737] via-[#b31f1f] to-[#7a1212] shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),inset_0_-2px_6px_rgba(0,0,0,0.5)] border-[1px] border-[#ea9999]"></div>
+            <div className="absolute inset-1 rounded-full border border-white/20 pointer-events-none"></div>
+            <div className="relative text-[#fdf0ed] drop-shadow-[0_2px_2px_rgba(0,0,0,0.4)] flex flex-col items-center">
+              <Heart size={32} className="mx-auto block" fill="currentColor" />
+            </div>
+          </button>
+        </motion.div>
+
+        {/* Красный блок с надписью */}
+        <motion.div
+          className="mt-8 bg-red-600 text-white px-6 py-3 rounded-full font-sans text-sm uppercase tracking-widest shadow-lg"
+          animate={{ scale: [1, 1.03, 1], opacity: [1, 0.8, 1] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          Нажмите, чтобы открыть
+        </motion.div>
+      </motion.div>
+
+      {/* Floral decorations */}
+      <div className="absolute top-0 right-0 w-80 h-80 md:w-[32rem] md:h-[32rem] bg-[url('https://images.unsplash.com/photo-1507290439931-a861b5a38200?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] bg-cover opacity-15 pointer-events-none rounded-bl-full" style={{ mixBlendMode: 'multiply' }}></div>
+      <div className="absolute bottom-0 left-0 w-80 h-80 md:w-[32rem] md:h-[32rem] bg-[url('https://images.unsplash.com/photo-1507290439931-a861b5a38200?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] bg-cover opacity-15 pointer-events-none rounded-tr-full transform rotate-180" style={{ mixBlendMode: 'multiply' }}></div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       {/* Main Content */}
       <div className={`w-full max-w-2xl mx-auto bg-white/70 backdrop-blur-md shadow-[0_0_60px_rgba(0,0,0,0.08)] min-h-screen pb-24 ${isOpened ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000 relative z-10 border-x border-[#cbae9e]/20`}>
