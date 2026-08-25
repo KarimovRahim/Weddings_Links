@@ -74,7 +74,11 @@ export default function InvitationView() {
   // Аудио состояния
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [audioInitialized, setAudioInitialized] = useState(false);
+
+  // Автоскролл
+  const autoScrollTimerRef = useRef<number | null>(null);
+  const autoScrollRAFRef = useRef<number | null>(null);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
 
   useEffect(() => {
     document.fonts.ready.then(() => {
@@ -159,7 +163,6 @@ export default function InvitationView() {
     audio.volume = 0.5;
     audio.preload = 'auto';
     audioRef.current = audio;
-    setAudioInitialized(true);
 
     // Попытка автоматического воспроизведения (может быть заблокирована)
     audio.play()
@@ -190,6 +193,78 @@ export default function InvitationView() {
       audioRef.current = null;
     };
   }, []);
+
+  // Автоскролл после открытия
+  useEffect(() => {
+    if (!isOpened) return;
+
+    // Ждём 2 секунды после открытия
+    const delayTimer = window.setTimeout(() => {
+      // Запускаем автоскролл, только если пользователь ещё не начал скроллить вручную
+      if (!isAutoScrolling && window.scrollY === 0) {
+        startAutoScroll();
+      }
+    }, 2000);
+
+    return () => {
+      window.clearTimeout(delayTimer);
+      stopAutoScroll();
+    };
+  }, [isOpened]);
+
+  // Обработчики для остановки автоскролла при взаимодействии пользователя
+  useEffect(() => {
+    const handleManualScroll = () => {
+      if (isAutoScrolling) {
+        stopAutoScroll();
+      }
+    };
+
+    window.addEventListener('wheel', handleManualScroll);
+    window.addEventListener('touchmove', handleManualScroll);
+    window.addEventListener('keydown', handleManualScroll); // стрелки, пробел, PgUp/PgDn
+
+    return () => {
+      window.removeEventListener('wheel', handleManualScroll);
+      window.removeEventListener('touchmove', handleManualScroll);
+      window.removeEventListener('keydown', handleManualScroll);
+    };
+  }, [isAutoScrolling]);
+
+  // Функция запуска автоскролла
+  const startAutoScroll = () => {
+    const scrollStep = 1; // пикселей за шаг
+    const interval = 30; // мс между шагами (медленно)
+
+    setIsAutoScrolling(true);
+
+    const step = () => {
+      const currentScroll = window.scrollY;
+      const maxScroll = document.body.scrollHeight - window.innerHeight;
+
+      if (currentScroll < maxScroll) {
+        window.scrollBy(0, scrollStep);
+        autoScrollRAFRef.current = window.requestAnimationFrame(step);
+      } else {
+        stopAutoScroll();
+      }
+    };
+
+    autoScrollRAFRef.current = window.requestAnimationFrame(step);
+  };
+
+  // Функция остановки автоскролла
+  const stopAutoScroll = () => {
+    if (autoScrollRAFRef.current) {
+      window.cancelAnimationFrame(autoScrollRAFRef.current);
+      autoScrollRAFRef.current = null;
+    }
+    if (autoScrollTimerRef.current) {
+      window.clearTimeout(autoScrollTimerRef.current);
+      autoScrollTimerRef.current = null;
+    }
+    setIsAutoScrolling(false);
+  };
 
   const toggleAudio = () => {
     const audio = audioRef.current;
@@ -385,7 +460,15 @@ export default function InvitationView() {
                     <Heart size={32} className="mx-auto block" fill="currentColor" />
                  </div>
               </button>
-              <p className="mt-8 text-xs tracking-[0.3em] font-sans text-[#a79485] uppercase">Открыть конверт</p>
+              
+              {/* Плавно мигающая подсказка */}
+              <motion.p 
+                className="mt-8 text-xs tracking-[0.3em] font-sans text-[#a79485] uppercase"
+                animate={{ opacity: [1, 0.4, 1] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                Нажмите, чтобы открыть приглашение
+              </motion.p>
             </motion.div>
             
             {/* Floral decorations */}
