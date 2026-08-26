@@ -714,7 +714,7 @@ export default function InvitationView() {
         {/* Learn IT Badge */}
         <div className="pt-8 pb-4 flex justify-center relative z-10 w-full mb-0">
           <a 
-            href="https://www.learn-it-academy.site/" 
+            href="https://www.learn-it-academy.tj/" 
             target="_blank" 
             rel="noopener noreferrer"
             className="group relative inline-flex items-center justify-center px-6 py-3 overflow-hidden transition-all duration-500 rounded-2xl hover:scale-105 hover:shadow-[0_8px_30px_-5px_rgba(255,68,68,0.4)]"
