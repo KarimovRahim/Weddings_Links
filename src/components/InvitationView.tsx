@@ -711,26 +711,26 @@ export default function InvitationView() {
            </div>
         </section>
 
-        {/* Learn IT Badge */}
-        <div className="pt-8 pb-4 flex justify-center relative z-10 w-full mb-0">
-          <a 
-            href="https://www.learn-it-academy.tj/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group relative inline-flex items-center justify-center px-6 py-3 overflow-hidden transition-all duration-500 rounded-2xl hover:scale-105 hover:shadow-[0_8px_30px_-5px_rgba(255,68,68,0.4)]"
-          >
-            <div className="absolute inset-0 bg-[#ffffff] backdrop-blur-md border border-[#cbae9e]/80 rounded-2xl transition-all duration-500 group-hover:bg-[#111111] group-hover:border-[#ff4444]/50 shadow-md"></div>
-            <div className="absolute -inset-full top-0 z-0 block h-full w-1/2 -skew-x-12 transform bg-gradient-to-r from-transparent via-black/5 group-hover:via-white/10 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-[shimmer_1.5s_infinite]"></div>
-            
-            <span className="relative z-10 text-[10px] sm:text-xs font-sans tracking-[0.2em] text-[#5a504a] uppercase transition-colors duration-500 group-hover:text-gray-300 flex items-center gap-2">
-              <span className="inline">Разработано в</span>
-              <span className="font-bold text-[#b5a396] group-hover:text-[#ff4444] transition-colors duration-500 flex items-center gap-1.5 drop-shadow-sm group-hover:drop-shadow-[0_0_12px_rgba(255,68,68,0.6)]">
-                <Boxes size={16} strokeWidth={2.5} className="transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110" />
-                LEARN IT
-              </span>
-            </span>
-          </a>
-        </div>
+{/* Developed by Learn IT Badge */}
+<motion.a 
+  href="https://www.learn-it-academy.site/" 
+  target="_blank" 
+  rel="noopener noreferrer"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.8, duration: 0.5 }}
+  className="bottom-8 left-8 flex items-center gap-4 px-2 py-2 pr-6 rounded-2xl bg-black/40 backdrop-blur-xl border border-rose-500/20 hover:border-rose-500/60 hover:bg-black/80 hover:shadow-[0_0_30px_-5px_rgba(244,63,94,0.3)] transition-all duration-300 group overflow-hidden z-20"
+>
+  <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+  
+  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500/20 to-rose-600/10 flex items-center justify-center border border-rose-500/20 group-hover:border-rose-500/50 group-hover:scale-110 transition-all duration-300">
+     <Box className="w-5 h-5 text-rose-500 group-hover:drop-shadow-[0_0_8px_rgba(244,63,94,0.8)] transition-all" />
+  </div>
+  <div className="flex flex-col">
+    <span className="text-[9px] text-white/50 uppercase tracking-[0.2em] font-bold mb-0.5">Разработано в</span>
+    <span className="text-sm font-bold text-white group-hover:text-rose-400 transition-colors drop-shadow-md">Learn IT</span>
+  </div>
+</motion.a>
 
       </div>
     </div>
