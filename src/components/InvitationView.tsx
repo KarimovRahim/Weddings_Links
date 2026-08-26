@@ -74,11 +74,17 @@ export default function InvitationView() {
   // Аудио состояния
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const isPlayingRef = useRef(false); // ref для отслеживания актуального состояния
 
   // Автоскролл
   const autoScrollTimerRef = useRef<number | null>(null);
   const autoScrollRAFRef = useRef<number | null>(null);
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
+
+  // Синхронизация ref с состоянием
+  useEffect(() => {
+    isPlayingRef.current = isAudioPlaying;
+  }, [isAudioPlaying]);
 
   useEffect(() => {
     document.fonts.ready.then(() => {
@@ -156,7 +162,7 @@ export default function InvitationView() {
     };
   }, [isOpened]);
 
-  // Инициализация аудио и попытка автовоспроизведения
+  // Инициализация аудио + обработчик видимости страницы
   useEffect(() => {
     const audio = new Audio('/backaudio.m4a');
     audio.loop = true;
@@ -168,26 +174,61 @@ export default function InvitationView() {
     audio.play()
       .then(() => {
         setIsAudioPlaying(true);
+        isPlayingRef.current = true;
       })
       .catch(() => {
         console.log('Автовоспроизведение заблокировано. Ожидание первого взаимодействия...');
         setIsAudioPlaying(false);
+        isPlayingRef.current = false;
       });
 
-    // Если автовоспроизведение не удалось, запускаем при первом клике пользователя
+    // Запуск при первом клике, если автозапуск не удался
     const handleFirstInteraction = () => {
       if (audioRef.current && audioRef.current.paused) {
         audioRef.current.play()
-          .then(() => setIsAudioPlaying(true))
+          .then(() => {
+            setIsAudioPlaying(true);
+            isPlayingRef.current = true;
+          })
           .catch(err => console.error('Ошибка воспроизведения после клика:', err));
       }
       document.removeEventListener('click', handleFirstInteraction);
     };
-
     document.addEventListener('click', handleFirstInteraction, { once: true });
 
+    // Обработка видимости страницы
+    const handleVisibilityChange = () => {
+      const audioElement = audioRef.current;
+      if (!audioElement) return;
+
+      if (document.hidden) {
+        // Скрытие вкладки/приложения – пауза
+        if (!audioElement.paused) {
+          audioElement.pause();
+          // Состояние isAudioPlaying остаётся true, чтобы при возврате продолжить
+        }
+      } else {
+        // Возврат на вкладку – продолжаем, если музыка играла до скрытия
+        if (isPlayingRef.current && audioElement.paused) {
+          audioElement.play()
+            .then(() => {
+              setIsAudioPlaying(true);
+              isPlayingRef.current = true;
+            })
+            .catch(err => {
+              console.error('Не удалось возобновить воспроизведение:', err);
+              setIsAudioPlaying(false);
+              isPlayingRef.current = false;
+            });
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // Очистка при размонтировании
     return () => {
       document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       audio.pause();
       audio.src = '';
       audioRef.current = null;
@@ -200,7 +241,6 @@ export default function InvitationView() {
 
     // Ждём 2 секунды после открытия
     const delayTimer = window.setTimeout(() => {
-      // Запускаем автоскролл, только если пользователь ещё не начал скроллить вручную
       if (!isAutoScrolling && window.scrollY === 0) {
         startAutoScroll();
       }
@@ -222,7 +262,7 @@ export default function InvitationView() {
 
     window.addEventListener('wheel', handleManualScroll);
     window.addEventListener('touchmove', handleManualScroll);
-    window.addEventListener('keydown', handleManualScroll); // стрелки, пробел, PgUp/PgDn
+    window.addEventListener('keydown', handleManualScroll);
 
     return () => {
       window.removeEventListener('wheel', handleManualScroll);
@@ -231,10 +271,9 @@ export default function InvitationView() {
     };
   }, [isAutoScrolling]);
 
-  // Функция запуска автоскролла
   const startAutoScroll = () => {
-    const scrollStep = 1; // пикселей за шаг
-    const interval = 30; // мс между шагами (медленно)
+    const scrollStep = 1;
+    const interval = 30;
 
     setIsAutoScrolling(true);
 
@@ -253,7 +292,6 @@ export default function InvitationView() {
     autoScrollRAFRef.current = window.requestAnimationFrame(step);
   };
 
-  // Функция остановки автоскролла
   const stopAutoScroll = () => {
     if (autoScrollRAFRef.current) {
       window.cancelAnimationFrame(autoScrollRAFRef.current);
@@ -272,11 +310,15 @@ export default function InvitationView() {
     
     if (audio.paused) {
       audio.play()
-        .then(() => setIsAudioPlaying(true))
+        .then(() => {
+          setIsAudioPlaying(true);
+          isPlayingRef.current = true;
+        })
         .catch(err => console.error('Ошибка воспроизведения:', err));
     } else {
       audio.pause();
       setIsAudioPlaying(false);
+      isPlayingRef.current = false;
     }
   };
 
@@ -311,7 +353,6 @@ export default function InvitationView() {
     const targetDay = date.getDate();
     
     const firstDay = new Date(year, month, 1).getDay();
-    // JS days: 0 is Sun, 1 is Mon. Adjust to Mon=0, Sun=6.
     const startOffset = firstDay === 0 ? 6 : firstDay - 1;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     
@@ -450,7 +491,10 @@ export default function InvitationView() {
                     setIsOpened(true);
                     if (audioRef.current && audioRef.current.paused) {
                       audioRef.current.play()
-                        .then(() => setIsAudioPlaying(true))
+                        .then(() => {
+                          setIsAudioPlaying(true);
+                          isPlayingRef.current = true;
+                        })
                         .catch(err => console.error('Ошибка воспроизведения при открытии:', err));
                     }
                   }}
@@ -705,28 +749,28 @@ export default function InvitationView() {
            </div>
         </section>
 
-{/* Developed by Learn IT Badge */}
-<div className="pt-8 pb-4 flex justify-center relative z-10 w-full">
-  <motion.a 
-    href="https://www.learn-it-academy.site/" 
-    target="_blank" 
-    rel="noopener noreferrer"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.8, duration: 0.5 }}
-    className="inline-flex items-center gap-3 px-2 py-2 pr-5 rounded-2xl bg-[#fffdf9]/90 backdrop-blur-md border border-[#cbae9e]/60 shadow-[0_8px_30px_rgba(175,45,45,0.15)] hover:shadow-[0_8px_30px_rgba(175,45,45,0.35)] hover:border-[#b59e78] transition-all duration-300 group overflow-hidden w-fit"
-  >
-    <div className="absolute inset-0 bg-gradient-to-r from-[#b59e78]/0 via-[#b59e78]/10 to-[#b59e78]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none" />
-    
-    <div className="relative z-10 w-10 h-10 rounded-xl bg-gradient-to-br from-[#cbae9e]/20 to-[#b59e78]/10 flex items-center justify-center border border-[#b59e78]/40 group-hover:border-[#b59e78] group-hover:scale-110 transition-all duration-300">
-       <Boxes className="w-5 h-5 text-[#af2d2d] group-hover:drop-shadow-[0_0_8px_rgba(175,45,45,0.6)] transition-all" />
-    </div>
-    <div className="relative z-10 flex flex-col">
-      <span className="text-[9px] text-[#8a7f76] uppercase tracking-[0.2em] font-bold mb-0.5">Разработано в</span>
-      <span className="text-sm font-bold text-[#5a504a] group-hover:text-[#af2d2d] transition-colors drop-shadow-sm">Learn IT</span>
-    </div>
-  </motion.a>
-</div>
+        {/* Developed by Learn IT Badge */}
+        <div className="pt-8 pb-4 flex justify-center relative z-10 w-full">
+          <motion.a 
+            href="https://www.learn-it-academy.site/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+            className="inline-flex items-center gap-3 px-2 py-2 pr-5 rounded-2xl bg-[#fffdf9]/90 backdrop-blur-md border border-[#cbae9e]/60 shadow-[0_8px_30px_rgba(175,45,45,0.15)] hover:shadow-[0_8px_30px_rgba(175,45,45,0.35)] hover:border-[#b59e78] transition-all duration-300 group overflow-hidden w-fit"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-[#b59e78]/0 via-[#b59e78]/10 to-[#b59e78]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none" />
+            
+            <div className="relative z-10 w-10 h-10 rounded-xl bg-gradient-to-br from-[#cbae9e]/20 to-[#b59e78]/10 flex items-center justify-center border border-[#b59e78]/40 group-hover:border-[#b59e78] group-hover:scale-110 transition-all duration-300">
+               <Boxes className="w-5 h-5 text-[#af2d2d] group-hover:drop-shadow-[0_0_8px_rgba(175,45,45,0.6)] transition-all" />
+            </div>
+            <div className="relative z-10 flex flex-col">
+              <span className="text-[9px] text-[#8a7f76] uppercase tracking-[0.2em] font-bold mb-0.5">Разработано в</span>
+              <span className="text-sm font-bold text-[#5a504a] group-hover:text-[#af2d2d] transition-colors drop-shadow-sm">Learn IT</span>
+            </div>
+          </motion.a>
+        </div>
 
       </div>
     </div>
