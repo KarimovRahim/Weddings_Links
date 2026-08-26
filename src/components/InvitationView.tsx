@@ -713,16 +713,16 @@ export default function InvitationView() {
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ delay: 0.8, duration: 0.5 }}
-  className="fixed bottom-8 left-8 z-20 inline-flex items-center gap-3 px-2 py-2 pr-5 rounded-2xl bg-black/40 backdrop-blur-xl border border-rose-500/20 hover:border-rose-500/60 hover:bg-black/80 hover:shadow-[0_0_30px_-5px_rgba(244,63,94,0.3)] transition-all duration-300 group overflow-hidden w-fit"
+  className="fixed bottom-8 left-8 z-20 inline-flex items-center gap-3 px-2 py-2 pr-5 rounded-2xl bg-[#fffdf9]/90 backdrop-blur-md border border-[#cbae9e]/60 shadow-[0_8px_30px_rgba(175,45,45,0.15)] hover:shadow-[0_8px_30px_rgba(175,45,45,0.35)] hover:border-[#b59e78] transition-all duration-300 group overflow-hidden w-fit"
 >
-  <div className="absolute inset-0 bg-gradient-to-r from-rose-500/0 via-rose-500/10 to-rose-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none" />
+  <div className="absolute inset-0 bg-gradient-to-r from-[#b59e78]/0 via-[#b59e78]/10 to-[#b59e78]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none" />
   
-  <div className="relative z-10 w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500/20 to-rose-600/10 flex items-center justify-center border border-rose-500/20 group-hover:border-rose-500/50 group-hover:scale-110 transition-all duration-300">
-     <Boxes className="w-5 h-5 text-rose-500 group-hover:drop-shadow-[0_0_8px_rgba(244,63,94,0.8)] transition-all" />
+  <div className="relative z-10 w-10 h-10 rounded-xl bg-gradient-to-br from-[#cbae9e]/20 to-[#b59e78]/10 flex items-center justify-center border border-[#b59e78]/40 group-hover:border-[#b59e78] group-hover:scale-110 transition-all duration-300">
+     <Boxes className="w-5 h-5 text-[#af2d2d] group-hover:drop-shadow-[0_0_8px_rgba(175,45,45,0.6)] transition-all" />
   </div>
   <div className="relative z-10 flex flex-col">
-    <span className="text-[9px] text-white/50 uppercase tracking-[0.2em] font-bold mb-0.5">Разработано в</span>
-    <span className="text-sm font-bold text-white group-hover:text-rose-400 transition-colors drop-shadow-md">Learn IT</span>
+    <span className="text-[9px] text-[#8a7f76] uppercase tracking-[0.2em] font-bold mb-0.5">Разработано в</span>
+    <span className="text-sm font-bold text-[#5a504a] group-hover:text-[#af2d2d] transition-colors drop-shadow-sm">Learn IT</span>
   </div>
 </motion.a>
 
