@@ -531,20 +531,26 @@ export default function InvitationView() {
         <div className="absolute top-4 left-4 w-16 h-16 border-t-2 border-l-2 border-[#b59e78]/60 rounded-tl-xl pointer-events-none"></div>
         <div className="absolute top-4 right-4 w-16 h-16 border-t-2 border-r-2 border-[#b59e78]/60 rounded-tr-xl pointer-events-none"></div>
         
-        {/* Header Names */}
-        <section className="pt-28 pb-16 px-6 text-center relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="w-20 h-20 mx-auto mb-8 bg-[url('https://images.unsplash.com/photo-1544367567-0f2fcb046ebf?auto=format&fit=crop&w=200&q=80')] bg-cover border border-[#cbae9e]/40 rounded-full shadow-md" style={{ mixBlendMode: 'multiply' }}></div>
-            <h1 className="text-[3rem] md:text-7xl text-[#51433a] leading-tight mb-2 font-semibold" style={{ fontFamily: 'var(--font-serif)' }}>
-              {settings.groomName} <br/> <span className="font-script text-6xl text-[#b59e78] drop-shadow-md">и</span> <br/> {settings.brideName}
-            </h1>
-          </motion.div>
-        </section>
+        
+           <motion.div
+  initial={{ opacity: 0, scale: 0.85 }}
+  whileInView={{ opacity: 1, scale: 1 }}
+  viewport={{ once: true }}
+  transition={{ duration: 1, ease: "easeOut" }}
+  className="w-48 md:w-56 mx-auto mb-10 relative"
+>
+  {/* Мягкое свечение позади */}
+  <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#fce7f3]/40 via-transparent to-[#fed7aa]/40 blur-2xl scale-110"></div>
+  
+  {/* Само изображение */}
+  <img
+    src="/hero.jpg"
+    alt={`${settings.groomName} и ${settings.brideName}`}
+    className="relative w-full h-auto block select-none pointer-events-none"
+    style={{ filter: 'drop-shadow(0 6px 20px rgba(181, 158, 120, 0.25))' }}
+    loading="eager"
+  />
+</motion.div>
 
         {/* Greeting block */}
         <section className="py-16 px-8 text-center bg-gradient-to-b from-transparent via-white/50 to-transparent relative">
